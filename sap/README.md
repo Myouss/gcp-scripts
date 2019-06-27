@@ -111,5 +111,33 @@ The system opeartions are stored in `hana_opeartions.py`.
 When launching the opeartion under the hood the following will happen:
 
 1. The database will be stopped.
-1. A new worker will be created from a copy of the worker 1.
-1. The new worker will be connected to the existing cluster.
+2. A new worker will be created from a copy of the worker 1.
+3. The new worker will be connected to the existing cluster.
+
+## VM migration
+### Setup
+Before running the script, export the following variables in your environment
+```bash
+$ export PROJECT=""
+$ export ZONE=""
+$ export VM_NAME=""
+$ export NEW_ZONE=""
+$ export NEW_SUBNET=""
+
+```
+
+### Running
+To run the scale up it is necessary to run the following command. 
+```
+$ vm_migrate.py --project=${PROJECT} --zone=${ZONE} --vm_name=${VM_NAME} --new_zone=${ZONE} --new_subnet=${NEW_SUBNET}
+```
+### How does it work?
+
+When launching the opeartion under the hood the following will happen:
+
+1. shutdown the sorce VM
+2. set auto delete disk to false 
+3. create a snapshot from all the disks attached to the vm.
+4. create new disk for each snapshot will be created in the new zone with the orginal disk name.
+5. create new vm in the new zone , new subnet usinng the newly created disks.
+6. the script will copy all properties from the old vm like tags 
